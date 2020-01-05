@@ -68,12 +68,15 @@ class ApiService {
         if (i.verdict == Status.OK) {
           problems.add(Problem(
               index: i.problem.index,
-              contestID: i.problem.contestId.toString()));
+              contestID: i.problem.contestId.toString(),
+              name: i.problem.name,
+              tags:
+                  List<Tag>.from(i.problem.tags.map((f) => tagValues.map[f]))));
         }
       }
       return problems;
     } catch (error) {
-      print(error.toString() + 'asasdasd');
+      print(error.toString() + '@fetchUserData');
       return null;
     }
   }

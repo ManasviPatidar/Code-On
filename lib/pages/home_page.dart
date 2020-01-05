@@ -1,12 +1,9 @@
-import 'package:code_on/pages/auth_page.dart';
-import 'package:code_on/pages/result_page.dart';
+import 'package:code_on/pages/slide_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/animation.dart';
 
 import 'package:code_on/pages/username_page.dart';
 import 'package:code_on/models/user.dart';
-import 'package:code_on/services/api.dart';
-import 'package:code_on/services/auth.dart';
 
 class HomePage extends StatefulWidget {
   final User user;
@@ -39,7 +36,7 @@ class _HomePageState extends State<HomePage>
     print('build @ HomePage');
     User _user = widget.user;
     return widget.hasUsername
-        ? ResultPage(
+        ? SlidePage(
             user: _user,
           )
         : UsernamePage(

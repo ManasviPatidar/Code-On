@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:collection';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:code_on/models/complex_problems.dart';
 import 'package:code_on/models/problems.dart';
 import 'package:code_on/models/user.dart';
 import 'package:code_on/services/api.dart';
@@ -43,7 +44,7 @@ class DatabaseService {
         .setData({'arrayOfProblems': FieldValue.arrayUnion(problems)});
   }
 
-  Future<List<Problem>> fetchRecommendation({int type = 0, User user}) async {
+  Future<List<Problem>> fetchRecommendation({User user}) async {
     List map;
     try {
       String url =
@@ -57,18 +58,36 @@ class DatabaseService {
     }
     print(map);
     List recommendation = new List(map[0].length);
-    if (type == 0) {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int type;
+    // try {
+    //   type = prefs.getInt('type');
+    // } catch (error) {
+    //   print(error.toString());
+    //   type = 0;
+    // }
+    if (prefs.containsKey('type')) {
+      type = prefs.getInt('type');
+      if (type == 0) {
+        for (int i = 0; i < map[0].length; i++) {
+          recommendation[i] = map[1][i] + map[0][i];
+        }
+      } else if (type == 1) {
+        recommendation = map[0];
+      } else if (type == 2) {
+        recommendation = map[1];
+      } else {
+        print('Wrong type selected.');
+        for (int i = 0; i < map[0].length; i++) {
+          recommendation[i] = map[1][i] + map[0][i];
+        }
+      }
+    } else {
       for (int i = 0; i < map[0].length; i++) {
         recommendation[i] = map[1][i] + map[0][i];
       }
-    } else if (type == 1) {
-      recommendation = map[0];
-    } else if (type == 2) {
-      recommendation = map[1];
-    } else {
-      print('Wrong type selected.');
-      return null;
     }
+
     ApiService _api = ApiService();
     List<Problem> userSolves = await _api.fetchUserData(user);
     _api.fetchAndUploadProblemset();
@@ -99,9 +118,8 @@ class DatabaseService {
           }
         }
       }
-      SharedPreferences pref = await SharedPreferences.getInstance();
 
-      pref.setString(
+      prefs.setString(
           'recommendationData',
           json.encode({
             "problems":
