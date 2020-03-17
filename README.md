@@ -1,7 +1,7 @@
 
 # Code On
 
-![App Demo](https://github.com/ManasviPatidar/Code-On/tree/master/demo/demo.gif)
+![App Demo](demo/demo.gif)
 
 A Flutter application that supliments CodeForces by providing a recommendation system.
 
